@@ -7,3 +7,4 @@ from .serializers import CompaniesSerializer
 class CompaniesViewSet(viewsets.ModelViewSet):
     serializer_class = CompaniesSerializer
     queryset = Companies.objects.all()
+    #print(queryset)
