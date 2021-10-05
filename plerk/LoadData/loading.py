@@ -14,8 +14,8 @@ from preprocessing import preprocess_data, need_date, uppertacion, table_empresa
 #df_empresas = table_empresas(data)
 #df_transactions = table_transactions(data, df_empresas)
 
-table_empresas = pd.read_csv("/home/ladiv/Github/Api_P/plerk/LoadData/Empresas.csv")
-table_transactions = pd.read_csv("/home/ladiv/Github/Api_P/plerk/LoadData/Transactions.csv")
+table_empresas = pd.read_csv("/home/ladiv/Github/Api_P/plerk/LoadData/Table_Empresas.csv")
+table_transactions = pd.read_csv("/home/ladiv/Github/Api_P/plerk/LoadData/Table_Transactions.csv")
 
 
 #for indice_fila, fila in table_empresas.iterrows():
