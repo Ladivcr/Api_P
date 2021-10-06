@@ -13,50 +13,69 @@ from companies.models import Companies
 import pandas as pd
 import json
 # Create your views here.
+
+# ! GLOBAL FUNCTIONS
 def to_pandas_t(data):
-        #self.data = data
+    """function to convert the data from transactions in a DataFrame
+    INPUT
+    data = json data
+    OUTPUT
+    df = pandas DataFrame
+    """
+    #self.data = data
 
-        tmp_df = {"ID": [], "ID_Company": [], "price": [], "transaction_date": [],
-        "status_transaction": [], "status_approved": [], "final_pay": []}
+    tmp_df = {"ID": [], "ID_Company": [], "price": [], "transaction_date": [],
+    "status_transaction": [], "status_approved": [], "final_pay": []}
 
-        for element in data:          
-            element = (dict(element))
-            for key, value in element.items():
-                #print("key", key,"value", value)
-                if key == "pk":
-                    tmp_df["ID"].append(value)
-                elif key == "fields":
-                    tmp_df["ID_Company"].append(element["fields"]["ID_Company"])
-                    tmp_df["price"].append(element["fields"]["price"])
-                    tmp_df["transaction_date"].append(element["fields"]["transaction_date"])
-                    tmp_df["status_transaction"].append(element["fields"]["status_transaction"])
-                    tmp_df["status_approved"].append(element["fields"]["status_approved"])
-                    tmp_df["final_pay"].append(element["fields"]["final_pay"])
+    for element in data:          
+        element = (dict(element))
+        for key, value in element.items():
+            #print("key", key,"value", value)
+            if key == "pk":
+                tmp_df["ID"].append(value)
+            elif key == "fields":
+                tmp_df["ID_Company"].append(element["fields"]["ID_Company"])
+                tmp_df["price"].append(element["fields"]["price"])
+                tmp_df["transaction_date"].append(element["fields"]["transaction_date"])
+                tmp_df["status_transaction"].append(element["fields"]["status_transaction"])
+                tmp_df["status_approved"].append(element["fields"]["status_approved"])
+                tmp_df["final_pay"].append(element["fields"]["final_pay"])
                     
-        df = pd.DataFrame (tmp_df)
-        return (df)
+    df = pd.DataFrame (tmp_df)
+    return (df)
 
 def to_pandas_c(data):
-        
+    """function to convert the data from companies in a DataFrame
+    INPUT
+    data = json data
+    OUTPUT
+    df = pandas DataFrame
+    """
+    tmp_df = {"ID": [], "name": [], "status": []}
 
-        tmp_df = {"ID": [], "name": [], "status": []}
-
-        for element in data:          
-            element = (dict(element))
-            for key, value in element.items():
-                #print("key", key,"value", value)
-                if key == "pk":
-                    tmp_df["ID"].append(value)
-                elif key == "fields":
-                    tmp_df["name"].append(element["fields"]["name"])
-                    tmp_df["status"].append(element["fields"]["status"])
+    for element in data:          
+        element = (dict(element))
+        for key, value in element.items():
+            #print("key", key,"value", value)
+            if key == "pk":
+                tmp_df["ID"].append(value)
+            elif key == "fields":
+                tmp_df["name"].append(element["fields"]["name"])
+                tmp_df["status"].append(element["fields"]["status"])
                     
-        df = pd.DataFrame (tmp_df)
-        return (df)
+    df = pd.DataFrame (tmp_df)
+    return (df)
 
+# ! Service one: resume service
 class ShowData(APIView):
 
-    def get(self, request, format = None):
+    def get(self, request):
+        """Function to show the whole data for the resume service
+        INPUT
+        request = rest_framework GET
+        OUTPUT
+        JSON with the resume service
+        """
         transactions = Transactions.objects.all()
         transactions= serializers.serialize('json', transactions)
         
@@ -112,12 +131,20 @@ class ShowData(APIView):
                             'Empresa mas rechazada': reject}
         })
 
+# ! Service two: filter service
 class FilterData(APIView):
 
-    def get(self, request, id, format=None):
-        print(id)
-        print(request)
-        print("\nENTRE\n")
+    def get(self, request, id):
+        """Function to show the filter data for each company
+        INPUT
+        request = rest_framework GET
+        id = str with the id company
+        OUTPUT
+        JSON with the filter service
+        """
+        #print(id)
+        #print(request)
+        #print("\nENTRE\n")
         transactions = Transactions.objects.all()
         transactions= serializers.serialize('json', transactions)
         transactions = json.loads(transactions)
