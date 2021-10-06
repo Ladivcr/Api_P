@@ -8,5 +8,5 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('', views.ShowData.as_view()),
-    #path('<str:name>', views.Detail.as_view())
+    path('<str:id>', views.FilterData.as_view())
 ]
