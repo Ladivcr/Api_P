@@ -67,7 +67,7 @@ def to_pandas_c(data):
     return (df)
 
 # ! Service one: resume service
-class ShowData(APIView):
+class ServiceOne(APIView):
 
     def get(self, request):
         """Function to show the whole data for the resume service
@@ -132,7 +132,7 @@ class ShowData(APIView):
         })
 
 # ! Service two: filter service
-class FilterData(APIView):
+class ServiceTwo(APIView):
 
     def get(self, request, id):
         """Function to show the filter data for each company
