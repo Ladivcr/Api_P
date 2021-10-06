@@ -155,9 +155,11 @@ class FilterData(APIView):
         companies = json.loads(companies)
         df_companies = to_pandas_c(companies)
 
+        
         # TODO: Nombre de la empresa
         name_companie = df_companies.loc[(df_companies.ID == str(id))].name
         #print(name_companie)
+        
 
         # TODO: Total de transacciones que SI se cobraron 
         aux = list(df_transactions.loc[(df_transactions.ID_Company == str(id))].final_pay)
@@ -196,15 +198,26 @@ class FilterData(APIView):
             else:
                 aux[month_na] = 1
         
-        max_sales_month = max(aux.values())
-        max_sales_month = list(aux.keys())[list(aux.values()).index(max_sales_month)]
+        # ! TODO: Haciendo un par de pruebas con 
+        # ! IDs que no existian observe que es hasta esta linea que todos
+        # ! fallaban, es por eso que he añadido el try except aquí 
+        # ! para validad si un ID existe o no
+        try:
+            max_sales_month = max(aux.values())
+            max_sales_month = list(aux.keys())[list(aux.values()).index(max_sales_month)]
 
-
-        return Response({"Servicio de empresa": {
-            "ID": id,
-            "Nombre": name_companie,
-            "Total de transacciones que SI se cobraron": total_yes,
-            "Total de transacciones que NO se cobraron": total_no,
-            f"El día que se registraron más transacciones {fecha} ({day_week_name})": conteo,
-            "El mes en el que se ha vendido más": max_sales_month
-        }})
+        
+            return Response({"Servicio de empresa": {
+                "ID": id,
+                "Nombre": name_companie,
+                "Total de transacciones que SI se cobraron": total_yes,
+                "Total de transacciones que NO se cobraron": total_no,
+                f"El día que se registraron más transacciones {fecha} ({day_week_name})": conteo,
+                "El mes en el que se ha vendido más": max_sales_month
+            }})
+        except:
+            response = {}
+            response['success'] = False
+            response['message'] = "El registro no existe"
+            response['status'] = status.HTTP_400_BAD_REQUEST
+            return Response(response)
