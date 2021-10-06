@@ -157,10 +157,27 @@ class FilterData(APIView):
         tmp = pd.Timestamp(fecha)
         #day_week = tmp.dayofweek
         day_week_name = tmp.day_name()
+
+        # * TODO: El més con más ventas
+        short_fechas = [pd.Timestamp(i[:10]) for i in fechas]
+
+        aux = {}
+        for month in short_fechas:
+            month_na = month.month_name()
+            if month_na in aux:
+                aux[month_na] += 1
+            else:
+                aux[month_na] = 1
+        
+        max_sales_month = max(aux.values())
+        max_sales_month = list(aux.keys())[list(aux.values()).index(max_sales_month)]
+
+
         return Response({"Servicio de empresa": {
             "ID": id,
             "Nombre": name_companie,
             "Total de transacciones que SI se cobraron": total_yes,
             "Total de transacciones que NO se cobraron": total_no,
             f"El día que se registraron más transacciones {fecha} ({day_week_name})": conteo,
+            "El mes en el que se ha vendido más": max_sales_month
         }})
