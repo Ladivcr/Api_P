@@ -55,48 +55,6 @@ def to_pandas_c(data):
         return (df)
 
 class ShowData(APIView):
-    """
-    def to_pandas_t(self, data):
-        self.data = data
-
-        tmp_df = {"ID": [], "ID_Company": [], "price": [], "transaction_date": [],
-        "status_transaction": [], "status_approved": [], "final_pay": []}
-
-        for element in data:          
-            element = (dict(element))
-            for key, value in element.items():
-                #print("key", key,"value", value)
-                if key == "pk":
-                    tmp_df["ID"].append(value)
-                elif key == "fields":
-                    tmp_df["ID_Company"].append(element["fields"]["ID_Company"])
-                    tmp_df["price"].append(element["fields"]["price"])
-                    tmp_df["transaction_date"].append(element["fields"]["transaction_date"])
-                    tmp_df["status_transaction"].append(element["fields"]["status_transaction"])
-                    tmp_df["status_approved"].append(element["fields"]["status_approved"])
-                    tmp_df["final_pay"].append(element["fields"]["final_pay"])
-                    
-        df = pd.DataFrame (tmp_df)
-        return (df)
-
-    def to_pandas_c(self, data):
-        self.data = data
-
-        tmp_df = {"ID": [], "name": [], "status": []}
-
-        for element in data:          
-            element = (dict(element))
-            for key, value in element.items():
-                #print("key", key,"value", value)
-                if key == "pk":
-                    tmp_df["ID"].append(value)
-                elif key == "fields":
-                    tmp_df["name"].append(element["fields"]["name"])
-                    tmp_df["status"].append(element["fields"]["status"])
-                    
-        df = pd.DataFrame (tmp_df)
-        return (df)
-    """
 
     def get(self, request, format = None):
         transactions = Transactions.objects.all()
@@ -184,11 +142,25 @@ class FilterData(APIView):
         total_no = aux.count("0")
 
         # TODO: El día que se registraron más transacciones
-
+        fechas=list(df_transactions.loc[(df_transactions.ID_Company == str(id))].transaction_date)
+        short_fechas = [i[:10] for i in fechas]
+        filter = set(short_fechas)
+        conteo = 0
+        fecha = ""
+        for fec in filter:
+            tmp = short_fechas.count(fec)
+            if tmp > conteo:
+                conteo = tmp
+                fecha = fec
+    
+        #print(fecha, conteo)
+        tmp = pd.Timestamp(fecha)
+        #day_week = tmp.dayofweek
+        day_week_name = tmp.day_name()
         return Response({"Servicio de empresa": {
             "ID": id,
             "Nombre": name_companie,
             "Total de transacciones que SI se cobraron": total_yes,
             "Total de transacciones que NO se cobraron": total_no,
-            "El día que se registraron más transacciones": "Martes",
+            f"El día que se registraron más transacciones {fecha} ({day_week_name})": conteo,
         }})
